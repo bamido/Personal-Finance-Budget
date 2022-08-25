@@ -1,0 +1,63 @@
+<section class="section">
+<div class="row">
+  <div class="col-lg-12">
+
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title" style="width:50%; float:left;">List of {{pagetitle}} to {{role.role_name}}</h5>
+        <p  style="border: 0px solid #000;  float:right; padding:20px;">                  
+        <a href="/roles" class="btn btn-primary btn-sm">
+        <i class="fa fa-list"></i> View Roles</a>
+        </p>
+        <p style="clear: both;"></p>
+            <!-- Default Accordion -->
+        <div class="accordion" id="accordionExample">
+          <form action="/privileges/assign/{{role.role_id}}" method="post">
+              {{#each modules}}
+              <div class="accordion-item">
+              <h2 class="accordion-header" id="heading{{module_id}}">
+                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{module_id}}" aria-expanded="true" aria-controls="collapse{{module_id}}">
+                  {{!-- {{inc @key}}.  --}}
+                  <i class="{{module_icon}}"></i> &nbsp;&nbsp;{{module_title}}
+                  </button>
+              </h2>
+              <div id="collapse{{module_id}}" class="accordion-collapse collapse show" aria-labelledby="heading{{module_id}}" data-bs-parent="#accordionExample">
+                  <div class="accordion-body">
+                    
+                  
+                    <div class="container">
+                      <div class="row">
+
+                      
+                      {{#each subtasks}} 
+                      
+                      <div class="col-md-2">
+                        
+                        {{#if ispriv}}
+                          <input type="checkbox" name="TaskId[]" id="task{{task_id}}" value="{{task_id}}" class="form-check-input"  checked   />
+                        {{else}}
+                          <input type="checkbox" name="TaskId[]" id="task{{task_id}}" value="{{task_id}}" class="form-check-input" />
+                        {{/if}}
+                          <label for="task{{task_id}}">{{task_label}} </label>
+                      </div>
+                      
+                      
+                      {{/each}}
+                    </div>
+                    </div>
+                  </div>
+              </div>
+              </div>
+              {{/each}}
+              <input type="hidden" name="roleid" id="roleid" value="{{role.role_id}}">
+              <button type="submit" name="btnsave" class="btn btn-success mt-3">Save Changes</button>
+          </form>
+        </div><!-- End Default Accordion Example -->
+
+      
+      </div>
+    </div>
+
+  </div>
+</div>
+</section>

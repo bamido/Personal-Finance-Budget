@@ -1,0 +1,85 @@
+<section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+
+          <div class="card" style="overflow:initial;">
+            <div class="card-body">
+              <h5 class="card-title" style="width:50%; float:left;">List of {{pagetitle}}</h5>
+              <p  style="border: 0px solid #000;  float:right; padding:20px;">                  
+              <a href="/threads/create" data-bs-title="Add New Thread" data-bs-remote="false" data-bs-toggle="modal" data-bs-target="#largeModal" class="btn btn-primary btn-sm">
+              <i class="fa fa-plus-circle"></i> Add New Thread</a>
+              </p>
+              <p style="clear: both;"></p>
+
+              <!-- Table with stripped rows -->
+              <table class="table datatable table-hover table-striped table-bordered" >
+                <thead class="bg-dark text-white">
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Thread</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Created At</th>
+                    <th scope="col">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {{#each threads}}
+                  <tr>
+                    <th scope="row">{{inc @index}}</th>
+                    <td>{{threadname}}</td>
+                    <td>
+                        
+                        <span class="badge bg-{{{isPublished threadstatus}}} rounded-pill">
+                        {{threadstatus}}
+                        </span>
+                        
+
+                    </td>
+                    
+                    <td nowrap>{{{dateFormat created_at 'DD MMMM, Y hh:mm:ss a'}}}</td>
+                    <td>
+                     
+                        <ul class="nav navbar-right"> 
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-cog fa"></i></a>
+                                <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right" role="menu" >
+                                <li class="dropdown-item">                                    
+                                    <a href="threads/edit/{{thread_id}}" data-bs-title="Edit {{threadname}} Thread" data-bs-remote="false" data-bs-toggle="modal" data-bs-target="#largeModal" class="btn btn-link"><i class="fa fa-edit"></i> Edit</a> 
+                                </li>  
+                                <li class="dropdown-divider"></li>
+                                <li class="dropdown-item">
+                                    <a name="deleter" id="deleter" value="{{thread_id}}"  data-swaltext="Are you sure you want to delete this {{threadname}} thread?" data-swalurl="threads/delete/{{thread_id}}?newMethod=DELETE" data-swalsuccesstitle="Deleted!" 
+                               data-swalsuccess="{{threadname}} thread was successfully deleted!"
+                               data-swalbtnconfirm="Yes, delete it!"
+                               data-swalredirect="/threads" data-swalimage="" class="btn btn-link"><i class="fa fa-trash"></i> Delete </a>
+
+                                </li> 
+                                <li class="dropdown-divider"></li>
+                                <li class="dropdown-item">                                    
+                                    <a href="threads/createpost/{{thread_id}}" data-bs-title="Add Post" data-bs-remote="false" data-bs-toggle="modal" data-bs-target="#extraLargeModal" class="btn btn-link"><i class="fa fa-plus-circle"></i> Add Post</a> 
+                                </li>
+                                <li class="dropdown-divider"></li>
+                                <li class="dropdown-item">                                    
+                                    <a href="threadposts/{{thread_id}}"  class="btn btn-link"><i class="fa fa-list"></i> View Posts</a> 
+                                </li>
+                                
+                                                                                            
+                                </ul>
+                            </li>
+                        </ul> 
+
+                        
+                      </td>
+                  </tr>
+                  {{/each}}
+                </tbody>
+                
+              </table>
+              <!-- End Table with stripped rows -->
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>

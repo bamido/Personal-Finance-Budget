@@ -1,0 +1,46 @@
+ <aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+      {{!-- <li class="nav-item">
+        <a class="nav-link " href="/portal/home">
+          <i class="bi bi-grid"></i>
+          <span>Dashboard</span>
+        </a>
+      </li><!-- End Dashboard Nav --> --}}
+
+
+      
+      {{#each usermodules}}
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#components-nav{{module_id}}" data-bs-toggle="collapse" href="#">
+          <i class="{{module_icon}}"></i><span>{{module_title}}</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="components-nav{{module_id}}" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+          {{#each subtasks}}
+           
+            <li>
+              <a href="{{task_route}}">
+                <i class="bi bi-circle"></i><span>{{task_label}}</span>
+              </a>
+            </li>
+
+           
+          {{/each}}
+        </ul>
+      </li>
+      {{/each}}
+
+      <li class="nav-item">
+        {{!-- <a class="nav-link collapsed" href="/logout">
+          <i class="bi bi-box-arrow-right"></i>
+          <span>Sign Out</span>
+        </a> --}}
+        <form action="/logout" method="post">
+          <button type="submit" class="nav-link collapsed btn btn-link"><i class="bi bi-box-arrow-right"></i> Sign Out</button>
+        </form>
+      </li><!-- End Blank Page Nav -->
+
+    </ul>
+
+  </aside>

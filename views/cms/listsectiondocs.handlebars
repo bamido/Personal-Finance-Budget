@@ -1,0 +1,261 @@
+    <div class="zx_content" id="form_container">
+           
+           <div id="myresponse"></div>
+
+
+        <br />
+        
+        <div class="row">
+            <div class="col-md-12" >
+                <h4>List of {{section.sectiontitle}} section docs</h4>
+            <div class="box-body table-responsive " style="overflow-x: auto;" id="ajaxresponse">
+            <table class="table datatable table-hover table-striped ">
+               
+                <thead class="bg-light">
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Doc </th>
+                    {{!-- <th scope="col">URL</th> --}}
+                    <th scope="col">Type</th>
+                    <th scope="col">Created At</th>
+                    <th scope="col">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {{#each sectiondocs}}
+                  <tr>
+                    <th scope="row">{{inc @index}}</th>
+                    <td>
+                        {{!-- <img src="/uploads/{{docurl}}" alt="{{docurl}}" class="img-thumbnail" style="width:45px;" /> --}}
+                        <embed src="/uploads/{{docurl}}" style="width:75px; height:75px;">
+                        {{!-- <object data="{{docurl}}" style="width:45px;"></object> --}}
+                    </td>
+                    {{!-- <td>
+                      <div style="word-wrap: break-word; width:120px; white-space:normal;">
+                        {{docurl}}
+                      </div>
+                    </td> --}}
+                    <td>
+                       {{doctype}}
+                    </td>
+                    <td nowrap>{{{dateFormat created_at 'DD/MM/Y'}}}</td>
+                    <td>
+                        <a href="#" class="btn btn-danger btn-sm">Delete</a>
+
+                        <a name="deleter" id="deleter" value="{{sectiondoc_id}}"  data-swaltext="Are you sure you want to delete this {{docurl}} section docs?" data-swalurl="/sectiondoc/delete/?newMethod=DELETE}}" 
+                                    data-swalbtnconfirm="Yes, delete it!" 
+                                    data-swalsuccesstitle="Deleted!"
+                          data-swalsuccess="Section Docs was successfully deleted!" 
+                          data-swalredirect="/sectiondocs/{{../section.section_id}}" 
+                          data-swalimage="{{docurl}}" 
+                          data-swalsectionid="{{../section.section_id}}" 
+                          class="btn btn-danger btn-sm text-white">
+                          <i class="fa fa-trash"></i> 
+                          Delete 
+                          </a>
+                    </td>
+                  </tr>
+                  {{/each}}
+                </tbody>
+                
+              </table>
+              </div>
+            </div>
+            
+        </div>
+
+        <div class="row">
+          <div class="offset-md-6 col-md-6 ">
+            <form id="theform" action="/sectiondoc/create/{{section.section_id}}" method="post" enctype="multipart/form-data" >
+        
+                    <div class="card-body">
+                                                                      
+                    <h4>Add new section docs</h4>   
+
+                    <div class="mb-3 row">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="doctype">Doc Type <span class="required">*</span>
+                        </label>
+                        <div class="col-md-9 col-sm-9 col-xs-12">
+                        <select name="doctype" id="doctype" required="required" class="form-select col-md-7 col-xs-12">
+                            {{#each docoptions}}
+                            <option value="{{@key}}" >{{this}}</option>
+                            {{/each}}
+                            
+                        </select>    
+                        </div>
+                    </div>       
+
+                    <div class="mb-3 row">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="docurl">Paste/Upload Docs <span class="required"></span>
+                        </label>
+                        <div class="col-md-9 col-sm-9 col-xs-12">
+                            <input type="file" id="docurl" name="docurl"  class="form-control col-md-7 col-xs-12">              
+                            <p class="text-muted" id="docmsg"> select files to upload</p>
+                        </div>
+                    </div> 
+
+
+                    </div>
+                            
+                    <div class="ln_solid"></div>
+                    <div class="border-top my-3"></div>
+                    <div class="form-group">
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">  
+                          <input type="hidden" name="sectionid" id="sectionid" value="{{section.section_id}}">                     
+                        <button type="button" class="btn btn btn-secondary" data-bs-dismiss="modal">Close</button>              
+                                <button class="btn btn-primary" type="reset">Reset</button>
+                        <button type="submit" class="btn btn-success" id="btnsave">Submit</button>
+                        </div>
+                    </div>
+                    <div class="my-3">
+                        <img src="/images/processing.gif" alt="processing" id="loadinggif"/>
+                    </div>
+
+                    </form>
+          </div>
+        </div>
+        
+      </div>
+ 
+ 
+ <script type="text/javascript">
+  $('#loadinggif').hide(); // hide the loading gif   
+
+  $('#theform').submit(function(e) {
+    e.preventDefault();
+    var sectionid = $('#sectionid').val();
+    var formData = new FormData($(this)[0]); 
+    $('#btnsave').prop('disabled', true);
+
+
+    //alert(formData);
+    //console.log(formData);
+
+    $('#loadinggif').show();  // show the loading gif.
+
+            $.ajax({
+                type: "POST",
+                enctype: 'multipart/form-data',
+                url:  "/sectiondoc/create/" + sectionid,
+                data: formData, 
+                processData: false,
+                contentType: false,
+                success: function (response, textStatus, xhr){  
+                console.log(xhr.status);
+                if(xhr.status==200){                
+                  //window.location = "/pagesections/" + pageid;  
+                  $('#ajaxresponse').html(response);     
+                  $('#btnsave').prop('disabled', false);
+                  $('#loadinggif').hide(); // hide the loading gif  
+                }
+                         
+                },
+                error: function(xhr, status, error){
+                  console.log(xhr);
+                  $('#btnsave').prop('disabled', false);
+                  $('#loadinggif').hide(); // hide the loading gif  
+
+                  var errorString = "<div class='alert alert-danger alert-dismissible fade show' role='alert'>";
+                  errorString += "<button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>";
+                  errorString += "<ul class='verror'>";                  
+                  $.each( xhr.responseJSON.errors, function( key, value) {
+ 
+                      errorString += "<li>" + value + "</li>";
+                  });
+                  errorString += "</ul></div>";
+                   $('#myresponse').html(errorString);   
+                  //alert('Error: something went wrong!');
+                  }
+
+            });
+            return false;
+        });
+
+         // docs type
+        $('#doctype').on('change',function(){
+            var optionSelected = $("option:selected", this);
+            var valueSelected = this.value;
+            //alert(valueSelected);
+
+            if(valueSelected=='video' || valueSelected=='audio'){
+            $('#docurl').attr('type','text');
+            document.getElementById('docmsg').innerHTML = "Paste your url in the box above";
+            }else{
+            $('#docurl').attr('type','file');
+            document.getElementById('docmsg').innerHTML = "select file to upload";
+            }
+        });
+
+       // generic delete based on specified data
+      $('[id^=deleter]').click(function() {
+
+          var $this = $(this);
+          var x = $this.attr("class");
+          var delId = $this.attr("value");
+          var delurl = $(this).data('swalurl');
+          var deltext = $(this).data('swaltext');
+          var delsuccess = $(this).data('swalsuccess');
+          var delredirect = $(this).data('swalredirect');
+          var swalimage = $(this).data('swalimage');
+          var swalsectionid= $(this).data('swalsectionid');
+
+          //var refId = $('li#delref').val();
+          //alert(delId);
+          deleteGeneric(delId, delurl, deltext, delsuccess, delredirect,
+              swalimage, swalsectionid);
+
+      });
+
+
+      function deleteGeneric(delId, delurl, deltext, delsuccess, delredirect,
+          swalimage, swalsectionid) {
+          var baseurl = "<?php echo url('/'); ?>";
+          // if (refId instanceof Array) {
+          //    alert('value is Array!');
+          //  } else {
+          //    alert('Not an array');
+          //  }
+          var token = $('meta[name="csrf-token"]').attr('content');
+          
+          var delt = "DELETE";
+          //alert(delredirect);
+
+          swal({
+              title: "Are you sure?",
+              text: deltext,
+              type: "warning",
+              showCancelButton: true,
+              closeOnConfirm: false,
+              confirmButtonText: "Yes, delete it!",
+              confirmButtonColor: "#ec6c62"
+          }, function() {
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+              $.ajax({
+                      url: delurl, // + delId,
+                      type: "DELETE",
+                      data: "delId=" + delId + "&sectionid=" + swalsectionid + "&swalimage=" + swalimage+ "&delredirect=" + delredirect + "&_method=" + delt + "&_token=" + token,
+                  })
+                  .done(function(data) {
+                      swal("Deleted!", delsuccess, "success");
+                      setTimeout(function() {
+                          //window.location.href = delredirect
+                          $('#ajaxresponse').html(data);   
+                      }, 1000);
+                      //window.location.href  = baseurl + "rbac/index/";
+                  })
+                  .fail(function(data) {
+                      //console.log(data);
+                      swal("Oops", "We couldn't connect to the server!",
+                          "error");
+                  });
+          });
+      }
+</script>
+</script>
+
+
+</script>

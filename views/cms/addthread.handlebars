@@ -1,0 +1,87 @@
+    <div class="zx_content" id="form_container">
+           
+           <div id="myresponse"></div>
+
+
+        <br />
+        <form id="theform" action="/threads/create" method="post" enctype="multipart/form-data" >
+        
+        <div class="card-body">
+            
+
+          <div class="mb-3 row">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="threadname">Thread Name <span class="required">*</span>
+            </label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <input type="text" id="threadname" name="threadname" required="required" class="form-control col-md-7 col-xs-12">              
+            </div>
+          </div>  
+          
+
+         </div>
+                
+           <div class="ln_solid"></div>
+          <div class="border-top my-3"></div>
+          <div class="form-group">
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">                             
+              <button type="button" class="btn btn btn-secondary" data-bs-dismiss="modal">Close</button>              
+			        <button class="btn btn-primary" type="reset">Reset</button>
+              <button type="submit" class="btn btn-success" id="btnsave">Submit</button>
+            </div>
+          </div>
+          <div class="my-3">
+            <img src="/images/processing.gif" alt="processing" id="loadinggif"/>
+          </div>
+
+        </form>
+      </div>
+ 
+ <script type="text/javascript">
+  $('#loadinggif').hide(); // hide the loading gif   
+
+  $('#theform').submit(function(e) {
+    e.preventDefault();
+    var formData = new FormData($(this)[0]); 
+    $('#btnsave').prop('disabled', true);
+
+    //alert(formData);
+    //console.log(formData);
+
+    $('#loadinggif').show();  // show the loading gif.
+
+            $.ajax({
+                type: "POST",
+                enctype: 'multipart/form-data',
+                url:  "/threads/create",
+                data: formData, 
+                processData: false,
+                contentType: false,
+                success: function (response, textStatus, xhr){  
+                console.log(xhr.status);
+                if(xhr.status==200){                
+                  window.location = "/threads";      
+                }
+                         
+                },
+                error: function(xhr, status, error){
+                  console.log(xhr);
+                  $('#btnsave').prop('disabled', false);
+                  $('#loadinggif').hide(); // hide the loading gif  
+
+                  var errorString = "<div class='alert alert-danger alert-dismissible fade show' role='alert'>";
+                  errorString += "<button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>";
+                  errorString += "<ul class='verror'>";                  
+                  $.each( xhr.responseJSON.errors, function( key, value) {
+ 
+                      errorString += "<li>" + value + "</li>";
+                  });
+                  errorString += "</ul></div>";
+                   $('#myresponse').html(errorString);   
+                  //alert('Error: something went wrong!');
+                  }
+
+            });
+            return false;
+        });
+
+</script>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>{{pagetitle}} - {{app_name}}</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="/images/{{app_favicon}}" rel="icon">
+  <link href="/images/{{app_favicon}}" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="/adminassets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/adminassets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="/adminassets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="/adminassets/vendor/quill/quill.snow.css" rel="stylesheet">
+  <link href="/adminassets/vendor/quill/quill.bubble.css" rel="stylesheet">
+  <link href="/adminassets/vendor/remixicon/remixicon.css" rel="stylesheet">
+  <link href="/adminassets/vendor/simple-datatables/style.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="/adminassets/css/style.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="/plugins/fontawesome-free/css/all.min.css">
+  <!-- sweetalert -->
+   <link rel="stylesheet" href="/plugins/sweetalert/sweetalert.css"/>
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  {{> admin/topmenu}}
+  <!-- End Header -->
+
+  <!-- ======= Sidebar ======= -->
+  {{> admin/sidebar}}
+ <!-- End Sidebar-->
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>{{modulename}}</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/admin">Home</a></li>
+          <li class="breadcrumb-item active">{{pagetitle}}</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    {{> admin/messages}}
+   {{{body}}}
+
+  </main><!-- End #main -->
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer">
+    <div class="copyright">
+       Copyright &copy; 2022 <strong><span>{{app_name}}</span></strong>. All Rights Reserved.
+    </div>
+    <div class="credits" style="display: none;">
+      
+    </div>
+  </footer><!-- End Footer -->
+
+   {{> admin/modal}}
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="/adminassets/vendor/apexcharts/apexcharts.min.js"></script>
+  <script src="/adminassets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/adminassets/vendor/chart.js/chart.min.js"></script>
+  <script src="/adminassets/vendor/echarts/echarts.min.js"></script>
+  <script src="/adminassets/vendor/quill/quill.min.js"></script>
+  <script src="/adminassets/vendor/simple-datatables/simple-datatables.js"></script>
+  <script src="/adminassets/vendor/tinymce/tinymce.min.js"></script>
+  <script src="/adminassets/vendor/php-email-form/validate.js"></script>
+
+  <!-- Template Main JS File -->
+  <script  src="/adminassets/js/main.js"></script>
+  
+  <script type="text/javascript" src="/js/jquery.min.js"></script>
+
+  <script type="text/javascript">
+ 
+    // Fill modal with content from link href
+  $("#extraLargeModal").on("show.bs.modal", function(e) {
+      //get data-id attribute of the clicked element
+      var title = $(e.relatedTarget).data('bs-title');
+      var dataid = $(e.relatedTarget).data('data-id');
+      //alert(title);
+      $("h5.modal-title").text(title);
+      var link = $(e.relatedTarget);
+      $(this).find(".modal-body").load(link.attr("href"));
+  });
+
+
+     // Fill modal with content from link href
+  $("#largeModal").on("show.bs.modal", function(e) {
+      //get data-id attribute of the clicked element
+      var title = $(e.relatedTarget).data('bs-title');
+      var dataid = $(e.relatedTarget).data('data-id');
+      //alert(title);
+      $("h5.modal-title").text(title);
+      var link = $(e.relatedTarget);
+      $(this).find(".modal-body").load(link.attr("href"));
+  });
+
+
+    // Fill modal with content from link href
+  $("#mediumModal").on("show.bs.modal", function(e) {
+      //get data-id attribute of the clicked element
+      var title = $(e.relatedTarget).data('bs-title');
+      var dataid = $(e.relatedTarget).data('data-id');
+      //alert(title);
+      $("h5.modal-title").text(title);
+      var link = $(e.relatedTarget);
+      $(this).find(".modal-body").load(link.attr("href"));
+  });
+
+
+  // this preserves scrolling behavior correctly on modal that open another modal
+  $(document).on('hidden.bs.modal', function(event) {
+      if ($('.modal:visible').length) {
+          $('body').addClass('modal-open');
+      }
+  });
+
+  
+</script>
+
+<!-- sweetalert -->
+<script src="/plugins/sweetalert/sweetalert.min.js"></script>
+<script type="text/javascript">
+
+  // generic delete based on specified data
+ $('[id^=deleter]').click(function() {
+
+     var $this = $(this);
+     var x = $this.attr("class");
+     var delId = $this.attr("value");
+     var delurl = $(this).data('swalurl');
+     var deltext = $(this).data('swaltext');
+      var delbtn = $(this).data('swalbtnconfirm');
+     var delsuccess = $(this).data('swalsuccess');
+     var delredirect = $(this).data('swalredirect');
+     var swalimage = $(this).data('swalimage');
+     var delsuccesstitle = $(this).data('swalsuccesstitle');
+     
+
+     //var refId = $('li#delref').val();
+     //alert(delId);
+     deleteGeneric(delId, delurl, deltext, delsuccess, delredirect,
+         swalimage, delbtn, delsuccesstitle);
+
+ });
+
+
+ function deleteGeneric(delId, delurl, deltext, delsuccess, delredirect,
+     swalimage, delbtn, delsuccesstitle) {
+     var baseurl = "/";
+     // if (refId instanceof Array) {
+     //    alert('value is Array!');
+     //  } else {
+     //    alert('Not an array');
+     //  }
+     var token = $('meta[name="csrf-token"]').attr('content');
+    
+     var delt = "DELETE";
+     //alert(token);
+     if(delbtn==''){
+          delbtn = "Yes, delete it!";
+       }
+
+
+     swal({
+         title: "Are you sure?",
+         text: deltext,
+         type: "warning",
+         showCancelButton: true,
+         closeOnConfirm: false,
+         confirmButtonText: delbtn, //"Yes, delete it!",
+         confirmButtonColor: "#ec6c62"
+     }, function() {
+          $.ajaxSetup({
+              headers: {
+                  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+              }
+          });
+         $.ajax({
+                 url: delurl, // + delId,
+                 type: "POST",
+                 data: "delId=" + delId + "&swalimage=" + swalimage+ "&delredirect=" + delredirect + "&method=" + delt,
+             })
+             .done(function(data) {
+                 //swal("Deleted!", delsuccess, "success");
+                 swal(delsuccesstitle, delsuccess, "success");
+                 setTimeout(function() {
+                     window.location.href = delredirect
+                 }, 1000);
+                 //window.location.href  = baseurl + "rbac/index/";
+             })
+             .fail(function(data) {
+                console.log(data);
+                 swal("Oops", "We couldn't connect to the server!",
+                     "error");
+             });
+     });
+ }
+</script>
+
+</body>
+
+</html>

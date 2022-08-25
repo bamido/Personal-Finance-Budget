@@ -1,0 +1,141 @@
+    <div class="zx_content" id="form_container">
+           
+           <div id="myresponse"></div>
+
+
+        <br />
+        <form id="theform" action="/pages/edit/{{page.page_id}}?newMethod=PUT" method="post" enctype="multipart/form-data" >
+        
+        <div class="card-body">
+
+            <div class="mb-3 row">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="parentid">Parent Page <span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <select name="parentid" id="parentid" required="required" class="form-select col-md-7 col-xs-12">
+                        
+                        <option value="0">No Parent</option>
+                    {{#each pages}}
+                        <option value="{{page_id}}" {{{isSelected ../page.parent_id page_id}}}>{{pagetitle}} </option>
+                    {{/each}}
+                    </select>  
+                </div>
+            </div> 
+
+          <div class="mb-3 row">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="pagetitle">Page Title <span class="required">*</span>
+            </label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <input type="text" id="pagetitle" name="pagetitle" value="{{page.pagetitle}}" required="required" class="form-control col-md-7 col-xs-12">              
+            </div>
+          </div>  
+
+
+          <div class="mb-3 row">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="keyword">Meta Keyword <span class="required"></span>
+            </label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <input type="text" id="keyword" name="keyword" value="{{page.metakeyword}}"  class="form-control col-md-7 col-xs-12">              
+            </div>
+          </div> 
+
+          <div class="mb-3 row">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="description">Meta Description <span class="required"></span>
+            </label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <input type="text" id="description" name="description" value="{{page.metadesc}}"  class="form-control col-md-7 col-xs-12">              
+            </div>
+          </div>
+
+          <div class="mb-3 row">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="sortorder">Sort Order <span class="required"></span>
+            </label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <input type="number" min="1" id="sortorder" name="sortorder" value="{{page.sortorder}}"  class="form-control col-md-7 col-xs-12">              
+            </div>
+          </div> 
+
+          <div class="mb-3 row">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="pagestatus">Status <span class="required">*</span>
+            </label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <select name="pagestatus" id="pagestatus" class="form-select col-md-7 col-xs-12">
+                {{#each theoptions}}
+                  <option value="{{@key}}" {{{isSelected ../page.pagestatus @key}}}>{{this}}</option>
+                {{/each}}
+                  
+              </select>    
+            </div>
+          </div> 
+
+        
+
+
+         </div>
+                
+           <div class="ln_solid"></div>
+          <div class="border-top my-3"></div>
+          <div class="form-group">
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end"> 
+              <input type="hidden" name="pageid" id="pageid" value="{{page.page_id}}">                            
+              <button type="button" class="btn btn btn-secondary" data-bs-dismiss="modal">Close</button>              
+			        <button class="btn btn-primary" type="reset">Reset</button>
+              <button type="submit" class="btn btn-success" id="btnsave">Save Changes</button>
+            </div>
+          </div>
+          <div class="my-3">
+            <img src="/images/processing.gif" alt="processing" id="loadinggif"/>
+          </div>
+
+        </form>
+      </div>
+ 
+ <script type="text/javascript">
+  $('#loadinggif').hide(); // hide the loading gif   
+
+  $('#theform').submit(function(e) {
+    e.preventDefault();
+    var formData = new FormData($(this)[0]); 
+    var pageid = $('#pageid').val();
+    $('#btnsave').prop('disabled', true);
+    //alert(formData);
+    //console.log(formData);
+
+    $('#loadinggif').show();  // show the loading gif.
+
+            $.ajax({
+                type: "POST",
+                enctype: 'multipart/form-data',
+                url:  "/pages/edit/"+pageid+"?newMethod=PUT",
+                data: formData, 
+                processData: false,
+                contentType: false,
+                success: function (response, textStatus, xhr){  
+                //console.log(xhr.status);
+                if(xhr.status==200){                
+                  window.location = "/pages";      
+                }
+                         
+                },
+                error: function(xhr, status, error){
+                  //console.log(xhr);
+                  $('#btnsave').prop('disabled', false);
+                  $('#loadinggif').hide(); // hide the loading gif  
+
+                  var errorString = "<div class='alert alert-danger alert-dismissible fade show' role='alert'>";
+                  errorString += "<button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>";
+                  errorString += "<ul class='verror'>";                  
+                  $.each( xhr.responseJSON.errors, function( key, value) {
+ 
+                      errorString += "<li>" + value + "</li>";
+                  });
+                  errorString += "</ul></div>";
+                   $('#myresponse').html(errorString);   
+                  //alert('Error: something went wrong!');
+                  }
+
+            });
+            return false;
+        });
+
+</script>

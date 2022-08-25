@@ -1,0 +1,38 @@
+<table class="table datatable table-hover table-striped ">
+               
+    <thead class="bg-light">
+        <tr>
+        <th scope="col">#</th>
+        <th scope="col">Doc </th>
+        {{!-- <th scope="col">URL</th> --}}
+        <th scope="col">Type</th>
+        <th scope="col">Created At</th>
+        <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each sectiondocs}}
+        <tr>
+        <th scope="row">{{inc @index}}</th>
+        <td>
+            {{!-- <img src="/uploads/{{docurl}}" alt="{{docurl}}" class="img-thumbnail" style="width:45px;" /> --}}
+            <embed src="/uploads/{{docurl}}" style="width:75px; height:75px;">
+            {{!-- <object data="{{docurl}}" style="width:45px;"></object> --}}
+        </td>
+        {{!-- <td>
+            <div style="word-wrap: break-word; width:120px; white-space:normal;">
+            {{docurl}}
+            </div>
+        </td> --}}
+        <td>
+            {{doctype}}
+        </td>
+        <td nowrap>{{{dateFormat created_at 'DD/MM/Y'}}}</td>
+        <td>
+            <a href="#" class="btn btn-danger btn-sm">Delete</a>
+        </td>
+        </tr>
+        {{/each}}
+    </tbody>
+
+</table>

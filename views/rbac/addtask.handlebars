@@ -1,0 +1,153 @@
+    <div class="zx_content" id="form_container">
+           
+           <div id="myresponse"></div>
+
+
+        <br />
+        <form id="theform" action="/tasks/create" method="post" enctype="multipart/form-data" >
+        
+        <div class="card-body">
+
+          <div class="mb-3 row">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="taskroute">Task Route <span class="required">*</span>
+            </label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <input type="text" id="taskroute" name="taskroute" required="required" class="form-control col-md-7 col-xs-12">              
+            </div>
+          </div>  
+
+          <div class="mb-3 row">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="tasklabel">Task Label <span class="required">*</span>
+            </label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <input type="text" id="tasklabel" name="tasklabel" required="required" class="form-control col-md-7 col-xs-12">              
+            </div>
+          </div> 
+          <div class="mb-3 row">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="taskmethod">Task Method <span class="required">*</span>
+            </label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <input type="text" id="taskmethod" name="taskmethod" required="required" class="form-control col-md-7 col-xs-12">              
+            </div>
+          </div> 
+          <div class="mb-3 row">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="taskicon">Task Icon <span class="required"></span>
+            </label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <input type="text" id="taskicon" name="taskicon" class="form-control col-md-7 col-xs-12">              
+            </div>
+          </div> 
+
+          <div class="mb-3 row">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="taskorder">Task Order <span class="required">*</span>
+            </label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <input type="number" min="1" id="taskorder" name="taskorder" required="required" value="1" class="form-control col-md-7 col-xs-12">              
+            </div>
+          </div> 
+
+          <div class="mb-3 row">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="navbar">Is Nav Bar <span class="required">*</span>
+            </label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <select name="navbar" id="navbar" class="form-select col-md-7 col-xs-12">
+                {{#each theoptions}}
+                  <option value="{{@key}}">{{this}}</option>
+                {{/each}}
+              </select>    
+            </div>
+          </div> 
+
+            <div class="mb-3 row">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="dashboard">Is Dashboard <span class="required">*</span>
+            </label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <select name="dashboard" id="dashboard" class="form-select col-md-7 col-xs-12">
+                {{#each theoptions}}
+                  <option value="{{@key}}">{{this}}</option>
+                {{/each}}
+              </select>    
+            </div>
+          </div> 
+
+          <div class="mb-3 row">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="module">Module <span class="required">*</span>
+            </label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <select name="module" id="module" required="required" class="form-select col-md-7 col-xs-12">
+                  <option value="">Choose Module</option>
+                {{#each modules}}
+                  <option value="{{module_id}}" >{{module_title}}</option>
+                {{/each}}
+              </select>  
+            </div>
+          </div> 
+
+
+         </div>
+                
+           <div class="ln_solid"></div>
+          <div class="border-top my-3"></div>
+          <div class="form-group">
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">                             
+              <button type="button" class="btn btn btn-secondary" data-bs-dismiss="modal">Close</button>              
+			        <button class="btn btn-primary" type="reset">Reset</button>
+              <button type="submit" class="btn btn-success" id="btnsave">Submit</button>
+            </div>
+          </div>
+          <div class="my-3">
+            <img src="/images/processing.gif" alt="processing" id="loadinggif"/>
+          </div>
+
+        </form>
+      </div>
+ 
+ <script type="text/javascript">
+  $('#loadinggif').hide(); // hide the loading gif   
+
+  $('#theform').submit(function(e) {
+    e.preventDefault();
+    var formData = new FormData($(this)[0]); 
+    $('#btnsave').prop('disabled', true);
+
+    //alert(formData);
+    //console.log(formData);
+
+    $('#loadinggif').show();  // show the loading gif.
+
+            $.ajax({
+                type: "POST",
+                enctype: 'multipart/form-data',
+                url:  "/tasks/create",
+                data: formData, 
+                processData: false,
+                contentType: false,
+                success: function (response, textStatus, xhr){  
+                //console.log(xhr.status);
+                if(xhr.status==200){                
+                  window.location = "/tasks";      
+                }
+                         
+                },
+                error: function(xhr, status, error){
+                  console.log(xhr);
+                  $('#btnsave').prop('disabled', false);
+                  $('#loadinggif').hide(); // hide the loading gif  
+
+                  var errorString = "<div class='alert alert-danger alert-dismissible fade show' role='alert'>";
+                  errorString += "<button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>";
+                  errorString += "<ul class='verror'>";                  
+                  $.each( xhr.responseJSON.errors, function( key, value) {
+ 
+                      errorString += "<li>" + value + "</li>";
+                  });
+                  errorString += "</ul></div>";
+                   $('#myresponse').html(errorString);   
+                  //alert('Error: something went wrong!');
+                  }
+
+            });
+            return false;
+        });
+
+</script>

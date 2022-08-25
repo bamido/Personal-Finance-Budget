@@ -1,0 +1,276 @@
+    <div class="zx_content" id="form_container">
+           
+           <div id="myresponse"></div>
+
+
+        <br />
+        <form id="theform" action="/threads/createpost/{{thread.thread_id}}" method="post" enctype="multipart/form-data" >
+        
+        <div class="card-body">
+            
+            <div class="mb-3 row">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="threadid">Thread<span class="required">*</span>
+                </label>
+                <div class="col-md-7 col-sm-7 col-xs-12">
+                    <select name="threadid" id="threadid" required="required" class="form-select col-md-7 col-xs-12">
+                        <option value="">Choose Thread</option>                        
+                    {{#each threads}}
+                        <option value="{{thread_id}}" {{{isSelected ../thread.thread_id thread_id}}} >{{threadname}}</option>
+                    {{/each}}
+                    </select>  
+                </div>
+            </div> 
+
+          <div class="mb-3 row">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="posttitle">Post Title <span class="required">*</span>
+            </label>
+            <div class="col-md-7 col-sm-7 col-xs-12">
+              <input type="text" id="posttitle" name="posttitle" required="required" class="form-control col-md-7 col-xs-12">              
+            </div>
+          </div>  
+
+
+          <div class="mb-3 row">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="postbody">Post Body<span class="required">*</span>
+            </label>
+            <div class="col-md-7 col-sm-7 col-xs-12">
+              <textarea id="postbody" name="postbody" required="required"  class="tinymce-editor form-control col-md-7 col-xs-12"></textarea>             
+            </div>
+          </div> 
+
+          <div class="mb-3 row">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="postimage">Post Image <span class="required"></span>
+            </label>
+            <div class="col-md-7 col-sm-7 col-xs-12">
+              <input type="file" id="postimage" name="postimage"  class="form-control col-md-7 col-xs-12">              
+            </div>
+          </div> 
+
+          <div class="mb-3 row">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="postvideourl">Post Video<span class="required"></span>
+            </label>
+            <div class="col-md-7 col-sm-7 col-xs-12">
+              <input type="text" id="postvideourl" name="postvideourl"  class="form-control col-md-7 col-xs-12">              
+              <p class="text-muted">paste the youtube video url in the text field</p>
+            </div>
+          </div>
+
+
+          <div class="mb-3 row">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="metakeyword">Meta Keyword <span class="required"></span>
+            </label>
+            <div class="col-md-7 col-sm-7 col-xs-12">
+              <input type="text" id="metakeyword" name="metakeyword"  class="form-control col-md-7 col-xs-12">              
+            </div>
+          </div>
+
+
+          <div class="mb-3 row">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="metadescription">Meta Description <span class="required"></span>
+            </label>
+            <div class="col-md-7 col-sm-7 col-xs-12">
+              <input type="text" id="metadescription" name="metadescription"  class="form-control col-md-7 col-xs-12">              
+            </div>
+          </div>
+
+
+          <div class="mb-3 row">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="sortorder">sortorder <span class="required">*</span>
+            </label>
+            <div class="col-md-7 col-sm-7 col-xs-12">
+              <input type="number" min="1" id="sortorder" name="sortorder" value="1" required="required"  class="form-control col-md-7 col-xs-12">              
+            </div>
+          </div> 
+
+          <div class="mb-3 row">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="pagestatus">Status <span class="required">*</span>
+            </label>
+            <div class="col-md-7 col-sm-7 col-xs-12">
+              <select name="poststatus" id="poststatus" required="required" class="form-select col-md-7 col-xs-12">
+                {{#each theoptions}}
+                  <option value="{{@key}}" >{{this}}</option>
+                {{/each}}
+                  
+              </select>    
+            </div>
+          </div> 
+
+          
+
+
+         </div>
+                
+           <div class="ln_solid"></div>
+          <div class="border-top my-3"></div>
+          <div class="form-group">
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">                       
+              <button type="button" class="btn btn btn-secondary" data-bs-dismiss="modal">Close</button>              
+			        <button class="btn btn-primary" type="reset">Reset</button>
+              <button type="submit" class="btn btn-success" id="btnsave">Submit</button>
+            </div>
+          </div>
+          <div class="my-3">
+            <img src="/images/processing.gif" alt="processing" id="loadinggif"/>
+          </div>
+
+        </form>
+      </div>
+ 
+ 
+ <script type="text/javascript">
+  $('#loadinggif').hide(); // hide the loading gif   
+
+  $('#theform').submit(function(e) {
+    e.preventDefault();
+    var threadid = $('#threadid').val();
+    var formData = new FormData($(this)[0]); 
+    $('#btnsave').prop('disabled', true);
+
+
+    //alert(formData);
+    //console.log(formData);
+
+    $('#loadinggif').show();  // show the loading gif.
+
+            $.ajax({
+                type: "POST",
+                enctype: 'multipart/form-data',
+                url:  "/threads/createpost/" + threadid,
+                data: formData, 
+                processData: false,
+                contentType: false,
+                success: function (response, textStatus, xhr){  
+                console.log(xhr.status);
+                if(xhr.status==200){                
+                  window.location = "/threadposts/" + threadid;      
+                }
+                         
+                },
+                error: function(xhr, status, error){
+                  console.log(xhr);
+                  $('#btnsave').prop('disabled', false);
+                  $('#loadinggif').hide(); // hide the loading gif  
+
+                  var errorString = "<div class='alert alert-danger alert-dismissible fade show' role='alert'>";
+                  errorString += "<button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>";
+                  errorString += "<ul class='verror'>";                  
+                  $.each( xhr.responseJSON.errors, function( key, value) {
+ 
+                      errorString += "<li>" + value + "</li>";
+                  });
+                  errorString += "</ul></div>";
+                   $('#myresponse').html(errorString);   
+                  //alert('Error: something went wrong!');
+                  }
+
+            });
+            return false;
+        });
+
+</script>
+<script src="/adminassets/vendor/tinymce/tinymce.min.js"></script>
+<script type="text/javascript">
+/**
+   * Initiate TinyMCE Editor
+   */
+
+  var useDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  tinymce.init({
+    selector: 'textarea.tinymce-editor',
+    plugins: 'print preview paste importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons',
+    imagetools_cors_hosts: ['picsum.photos'],
+    menubar: 'file edit view insert format tools table help',
+    toolbar: 'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample | ltr rtl',
+    toolbar_sticky: true,
+    autosave_ask_before_unload: true,
+    autosave_interval: '30s',
+    autosave_prefix: '{path}{query}-{id}-',
+    autosave_restore_when_empty: false,
+    autosave_retention: '2m',
+    image_advtab: true,
+    link_list: [{
+        title: 'My page 1',
+        value: 'https://www.tiny.cloud'
+      },
+      {
+        title: 'My page 2',
+        value: 'http://www.moxiecode.com'
+      }
+    ],
+    image_list: [{
+        title: 'My page 1',
+        value: 'https://www.tiny.cloud'
+      },
+      {
+        title: 'My page 2',
+        value: 'http://www.moxiecode.com'
+      }
+    ],
+    image_class_list: [{
+        title: 'None',
+        value: ''
+      },
+      {
+        title: 'Some class',
+        value: 'class-name'
+      }
+    ],
+    importcss_append: true,
+    file_picker_callback: function(callback, value, meta) {
+      /* Provide file and text for the link dialog */
+      if (meta.filetype === 'file') {
+        callback('https://www.google.com/logos/google.jpg', {
+          text: 'My text'
+        });
+      }
+
+      /* Provide image and alt text for the image dialog */
+      if (meta.filetype === 'image') {
+        callback('https://www.google.com/logos/google.jpg', {
+          alt: 'My alt text'
+        });
+      }
+
+      /* Provide alternative source and posted for the media dialog */
+      if (meta.filetype === 'media') {
+        callback('movie.mp4', {
+          source2: 'alt.ogg',
+          poster: 'https://www.google.com/logos/google.jpg'
+        });
+      }
+    },
+    templates: [{
+        title: 'New Table',
+        description: 'creates a new table',
+        content: '<div class="mceTmpl"><table width="98%%"  border="0" cellspacing="0" cellpadding="0"><tr><th scope="col"> </th><th scope="col"> </th></tr><tr><td> </td><td> </td></tr></table></div>'
+      },
+      {
+        title: 'Starting my story',
+        description: 'A cure for writers block',
+        content: 'Once upon a time...'
+      },
+      {
+        title: 'New list with dates',
+        description: 'New List with dates',
+        content: '<div class="mceTmpl"><span class="cdate">cdate</span><br /><span class="mdate">mdate</span><h2>My List</h2><ul><li></li><li></li></ul></div>'
+      }
+    ],
+    template_cdate_format: '[Date Created (CDATE): %m/%d/%Y : %H:%M:%S]',
+    template_mdate_format: '[Date Modified (MDATE): %m/%d/%Y : %H:%M:%S]',
+    height: 400,
+    image_caption: true,
+    quickbars_selection_toolbar: 'bold italic | quicklink h2 h3 blockquote quickimage quicktable',
+    noneditable_noneditable_class: 'mceNonEditable',
+    toolbar_mode: 'sliding',
+    contextmenu: 'link image imagetools table',
+    skin: useDarkMode ? 'oxide-dark' : 'oxide',
+    content_css: useDarkMode ? 'dark' : 'default',
+    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+    setup: function (editor) {
+        editor.on('change', function () {
+            tinymce.triggerSave();
+        });
+    }
+  });
+</script>
